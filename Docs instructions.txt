@@ -1,0 +1,221 @@
+﻿Step 1: Install Docker Desktop
+macOS
+1. Visit the Docker Desktop for Mac installation page.
+
+2. Download the installer suitable for your Mac's architecture (Apple Silicon or Intel).
+
+3. Open the downloaded .dmg file and drag Docker to the Applications folder.
+
+4. Launch Docker Desktop and follow the on-screen instructions to complete the setup.​Docker Documentation
+
+Windows 10 & 11
+   1. Go to the Docker Desktop for Windows installation page.
+
+   2. Download the Docker Desktop installer.
+
+   3. Run the installer and follow the setup wizard.
+
+   4. Ensure that the WSL 2 feature is enabled during installation.
+
+   5. After installation, launch Docker Desktop and complete the initial setup.​Docker Community Forums+2Docker Documentation+2Simplilearn.com+2
+
+Ubuntu Linux
+Update your existing list of packages:​
+
+bash
+
+sudo apt update
+      1. 2. Install required packages:​
+bash
+
+
+sudo apt install ca-certificates curl gnupg lsb-release
+
+
+3. Add Docker’s official GPG key:​Docker Documentation
+bash
+
+
+sudo mkdir -p /etc/apt/keyrings
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+
+
+4. Set up the Docker repository:​
+bash
+
+
+echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] \
+  https://download.docker.com/linux/ubuntu \
+  $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+
+5. Update the package index:​
+bash
+
+
+sudo apt update
+
+
+6. Install Docker Engine:​Docker Documentation+1Docker Documentation+1
+bash
+
+
+sudo apt install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+
+
+7. Start and enable Docker:​
+bash
+
+
+sudo systemctl start docker
+sudo systemctl enable docker
+
+
+________________
+
+
+Step 2: Install Node.js
+Visit the official Node.js download page to get the latest version suitable for your operating system.​
+macOS
+Using Homebrew:
+
+bash
+
+brew install node
+      * Ensure Homebrew is installed. If not, visit Homebrew's official site for installation instructions.​
+      * Using Installer: Download the macOS Installer (.pkg) from the Node.js download page and follow the installation prompts.​
+
+Windows 10 & 11
+         * Using Installer: Download the Windows Installer (.msi) from the Node.js download page and run the installer.​
+
+         * Using NVM for Windows:
+
+            1. Download the NVM for Windows installer from this link.
+
+            2. Run the installer and follow the setup instructions.
+
+After installation, open Command Prompt and install Node.js:​Reddit
+
+ cmd
+
+nvm install lts
+nvm use lts
+Ubuntu Linux
+               * Using NodeSource PPA:
+
+Add the NodeSource PPA:​
+
+bash
+
+curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
+                  1. Install Node.js:​
+
+bash
+
+sudo apt install -y nodejs
+                  2.                   * Using NVM (Node Version Manager):
+
+Install NVM:​
+
+bash
+
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+                     3. Restart your terminal or run:​
+
+bash
+
+source ~/.nvm/nvm.sh
+                     4. Install Node.js:​
+
+bash
+
+nvm install --lts
+nvm use --lts
+                     5. ________________
+
+
+Step 3: Download and Set Up Project Files
+                     1. Download the following ZIP files:
+
+                        * ai-assistant-api--main.zip
+
+                        * ai-assistant-dashboard-main.zip​
+
+                           2. Unzip the downloaded files:​
+
+macOS/Linux:
+
+bash
+
+unzip ai-assistant-api--main.zip
+unzip ai-assistant-dashboard-main.zip
+                              *                               * Windows: Right-click on each ZIP file and select "Extract All...".
+
+________________
+
+
+Step 4: Launch the Backend (API)
+                                 1. Navigate to the API directory:​
+
+bash
+
+cd ai-assistant-api--main
+Make sure Docker Desktop is running. On Windows/macOS, open Docker Desktop. On Ubuntu, run:
+
+bash
+
+sudo systemctl start docker
+                                    2. Build and run the backend container using Docker Compose:
+
+ bash
+
+docker compose up --build -d
+
+
+                                    3.  Wait a few moments for the backend services to finish building and running in the background.
+
+________________
+
+
+Step 5: Launch the Frontend (Dashboard)
+Navigate to the dashboard directory:
+
+bash
+
+cd ../ai-assistant-dashboard-main
+                                       1. Install all dependencies (this might take a moment):
+
+bash
+
+npm install
+                                       2. Build the frontend:
+
+bash
+
+npm run build
+                                       3. Start the preview server (don’t close this terminal tab/window!):
+
+bash
+
+npm run preview
+________________
+
+
+Step 6: View the Application
+Open your browser and go to:
+
+arduino
+
+http://localhost:8127
+                                       1.  You should now see the AI Assistant Dashboard UI.
+
+________________
+
+
+Everything is up and running. If you encounter issues:
+                                          * Check Docker logs: docker compose logs -f in ai-assistant-api--main
+
+                                          * Make sure ports aren’t blocked (8127 for frontend, usually 8000 or 3000 for backend)
+
+                                          * Ensure Node.js and Docker are properly installed (node -v, docker -v)

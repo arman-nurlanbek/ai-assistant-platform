@@ -1,0 +1,100 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:6.0
+    container_name: mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./data/.mon-lol/mongo2:/data/db
+    networks:
+      - ai-assistant-network
+    restart: always
+
+  qdrant:
+    image: qdrant/qdrant:latest
+    container_name: qdrant
+    ports:
+      - "6333:6333"
+      - "6334:6334"
+    volumes:
+      - ./data/qdrant_data:/qdrant/storage
+    networks:
+      - ai-assistant-network
+    restart: always
+
+  api:
+    build:
+      context: .
+      dockerfile: dockerfiles/api.dockerfile
+    container_name: ai-assistant-api
+    ports:
+      - "8005:8000"
+    depends_on:
+      - mongodb
+      - qdrant
+    volumes:
+      - ./:/app
+    env_file:
+      - .env
+    environment:
+      - MONGODB_URL=mongodb://mongodb:27017
+      - DB_NAME=ai_assistant_db
+      - QDRANT_URL=http://qdrant:6333
+    networks:
+      - ai-assistant-network
+    restart: always
+
+  tg-bot:
+    build:
+      context: .
+      dockerfile: dockerfiles/tgbot.dockerfile
+    container_name: ai-assistant-telegram
+    depends_on:
+      - mongodb
+      - api
+      - qdrant
+    volumes:
+      - ./:/app
+    env_file:
+      - .env
+    environment:
+      - MONGODB_URL=mongodb://mongodb:27017
+      - DB_NAME=ai_assistant_db
+      - QDRANT_URL=http://qdrant:6333
+    networks:
+      - ai-assistant-network
+    restart: always
+
+  wa-bot:
+    build:
+      context: .
+      dockerfile: dockerfiles/wabot.dockerfile
+    container_name: ai-assistant-whatsapp
+    ports:
+      - "8082:8001"
+    volumes:
+      - ./:/app
+    depends_on:
+      - mongodb
+      - api
+      - qdrant
+    env_file:
+      - .env
+    environment:
+      - MONGODB_URL=mongodb://mongodb:27017
+      - DB_NAME=ai_assistant_db
+      - QDRANT_URL=http://qdrant:6333
+      - WHATSAPP_VERIFY_TOKEN=${WHATSAPP_VERIFY_TOKEN}
+    networks:
+      - ai-assistant-network
+    restart: always
+
+networks:
+  ai-assistant-network:
+    driver: bridge
+
+# volumes:
+#   mongo_data:
+#   qdrant_data:
